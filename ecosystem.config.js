@@ -31,7 +31,7 @@ module.exports = {
       path: '/var/www/html/scrapper',
       key: '/home/marcos/ana.pem',
       ssh_options: ['ForwardAgent=yes'],
-      'pre-deploy-local': `scp -i /home/marcos/ana.pem .env.production ubuntu@3.249.19.249:/var/www/html/scrapper/source`,
+      'pre-deploy-local': `scp -i /home/marcos/ana.pem .env ubuntu@3.249.19.249:/var/www/html/scrapper/source`,
       'post-deploy': 'npm install && pm2 reload ecosystem.config.js --env production'
     },
     staging: {},
