@@ -14,6 +14,33 @@ String.prototype.clean = function () {
   return this.trim().replace(/\t/g, '').replace(/\n/g, '');
 };
 
+function getJustText(el) {
+  return el.clone().children().remove().end().text().clean();;
+}
+
+
+app.get('/club/:clubId', async (req, res) => {
+  const { clubId } = req.params;
+  if (!clubId || isNaN(clubId)) return res.status(400).send('Params error');
+
+  try {
+    const { data: info } = await axios.get(`${process.env.URL}/club/${clubId}`);
+    const $ = cheerio.load(info);
+
+    const data = $('.club-content .col-sm-4 > div').map(function () {
+      const label = $(this).find('div').text().clean();
+      const value = getJustText($(this))
+      return { label, value }
+    }).toArray();
+
+    res.json(data)
+
+  } catch (error) {
+    logger.error('System Error: ' + error.message);
+    res.status(500).send('System Error');
+  }
+})
+
 app.get('/tournament/:tournamentId/match/:matchId', async (req, res) => {
 
   const { tournamentId, matchId } = req.params;
